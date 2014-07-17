@@ -14,69 +14,72 @@ import java.util.HashMap;
 
 public class LRUCache {
     
-    Map<Integer, DoubleLinkedList> map;
+    Map <Integer, DoubleLinkedList> hs;
     DoubleLinkedList head;
     DoubleLinkedList tail;
     int capacity;
-
+    
     public LRUCache(int capacity) {
         this.capacity = capacity;
-        this.map = new HashMap<Integer, DoubleLinkedList>();
         head = new DoubleLinkedList(Integer.MAX_VALUE, Integer.MAX_VALUE);
         tail = new DoubleLinkedList(Integer.MIN_VALUE, Integer.MIN_VALUE);
         head.next = tail;
+        head.prev = null;
         tail.prev = head;
+        tail.next = null;
+        hs = new HashMap<Integer, DoubleLinkedList>();
     }
     
     public int get(int key) {
-         if(map.containsKey(key)) {
-            DoubleLinkedList cur = map.get(key);
+       if(hs.containsKey(key)) {
+            DoubleLinkedList cur = hs.get(key);
             moveToHead(cur);
             return cur.value;
-         } else {
+        } else {
             return -1;
-         }
+        }
     }
     
     public void set(int key, int value) {
-        if(map.containsKey(key)) {
-            DoubleLinkedList cur = map.get(key);
+        if(hs.containsKey(key)){
+            DoubleLinkedList cur = hs.get(key);
             cur.value = value;
             moveToHead(cur);
         } else {
-            DoubleLinkedList cur = new DoubleLinkedList(key, value);
-            addToHead(cur);
-            map.put(cur.key, cur);
-            if(map.size() > this.capacity) {
+            if(hs.size() >= capacity) {
+                hs.remove(tail.prev.key);
                 removeTail();
             }
-        }   
+            DoubleLinkedList adding = new DoubleLinkedList(key, value);
+            addToHead(adding);
+            hs.put(key, adding);
+        }    
     }
-
+    
     private void moveToHead(DoubleLinkedList cur) {
         cur.prev.next = cur.next;
         cur.next.prev = cur.prev;
-        cur.next = null;
         cur.prev = null;
+        cur.next = null;
         addToHead(cur);
     }
-
+    
     private void addToHead(DoubleLinkedList cur) {
-        cur.prev = head;
         cur.next = head.next;
+        cur.prev = head;
         head.next.prev = cur;
         head.next = cur;
     }
-
+    
     private void removeTail() {
         if(head.next == tail) {
             return;
         }
-        DoubleLinkedList rm = map.remove(tail.prev.key);
-        rm.prev.next = rm.next;
-        rm.next.prev = rm.prev;
-        rm.next = null;
-        rm.prev = null;
+        DoubleLinkedList newPrev = tail.prev.prev;
+        tail.prev.next = null;
+        tail.prev = null;
+        newPrev.next = tail;
+        tail.prev = newPrev;
     }
 }
 
@@ -85,7 +88,6 @@ class DoubleLinkedList {
     DoubleLinkedList next;
     int key;
     int value;
-
     DoubleLinkedList(int key, int value) {
         this.key = key;
         this.value = value;
