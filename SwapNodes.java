@@ -7,7 +7,8 @@ Given a linked list, swap every two adjacent nodes and return its head.
 For example,
 Given 1->2->3->4, you should return the list as 2->1->4->3.
 
-Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
+Your algorithm should use only constant space. You may not modify the values 
+in the list, only nodes itself can be changed.
 */
 
 /**
@@ -26,30 +27,28 @@ public class SwapNodes {
         // IMPORTANT: Please reset any member data you declared, as
         // the same Solution instance will be reused for each test case.
         
-        ListNode temp = head;
-        ListNode temp2 = head;
-        if (head == null || head.next == null) return head;
-        ListNode oldhead = head.next;
-        
-        temp = head;
-        temp2 = head.next.next;
-        head = head.next;
-        head.next = temp;
-        head.next.next = temp2;
-        head = head.next;
-        
-        while (head != null) {
-            if (head.next == null || head.next.next == null) break;
-            temp = head.next;
-            temp2 = temp.next.next;
-            head.next = temp.next;
-            head = temp.next;
-            head.next = temp;
-            head.next.next = temp2;
-            head = head.next;
+        if(head == null || head.next == null) {
+            return head;
+        }    
+        ListNode root = new ListNode(Integer.MAX_VALUE), keep_root;
+        root.next = head;
+        keep_root = root;
+        ListNode first = head;
+        ListNode second = head.next;
+        while(first != null) {
+            root.next = second;
+            first.next = second.next;
+            second.next = first;
+            root = first;
+            first = first.next;
+            if(first != null) {
+                if(first.next != null) {
+                    second = first.next;
+                } else {
+                    return keep_root.next;
+                }
+            } 
         }
-        
-        head = oldhead;
-        return head;
+        return keep_root.next;
     }
 }
