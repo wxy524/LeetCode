@@ -10,20 +10,25 @@ the contiguous subarray [4,−1,2,1] has the largest sum = 6.
 click to show more practice.
 
 More practice:
-If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
+If you have figured out the O(n) solution, try coding another solution using the divide and conquer 
+approach, which is more subtle.
 */
 
 public class MaxSubArray {
     public int maxSubArray(int[] A) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
-        
-        int max = Integer.MIN_VALUE, sum = 0;
-        for (int i = 0; i < A.length; i++) {
-            sum = sum + A[i];
-            if (max < sum) max = sum;
-            if (sum < 0) sum = 0;
+        if(A.length == 0 || A == null) {
+            return 0;
         }
+        int max = Integer.MIN_VALUE, sum = 0;
+        for(int i = 0; i < A.length; i++) {
+            sum += A[i];
+            if(sum > max) {
+                max = sum;
+            }
+            if(sum < 0) {
+                sum = 0;
+            }
+        }  
         return max;
     }
 }
