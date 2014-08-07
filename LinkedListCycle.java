@@ -1,6 +1,6 @@
 /*
 Author: Xueyi Wang
-Date: Nov 2013
+Date: August 6 2014
 Problem Statement:
 Given a linked list, determine if it has a cycle in it.
 
@@ -23,16 +23,20 @@ public class LinkedListCycle {
     public boolean hasCycle(ListNode head) {
         // IMPORTANT: Please reset any member data you declared, as
         // the same Solution instance will be reused for each test case.
-        ListNode head1 = head;
-        ListNode head2 = head;
-        if(head == null) return false;
-        
-        while (head2 != null) {
-            head1 = head1.next;
-            if (head2.next != null) head2 = head2.next.next;
-            else    return false;
-            
-            if (head1 == head2) return true;
+        if(head == null || head.next == null) {
+            return false;
+        }    
+        ListNode first = head, second = head;
+        while(second != null) {
+            first = first.next;
+            if(second.next != null) {
+                second = second.next.next;
+            } else {
+                return false;
+            }
+            if(first == second) {           //fast pointer meet slow pointer, cycle exists
+                return true;
+            }
         }
         return false;
     }
