@@ -16,29 +16,20 @@ Note: The sequence of integers will be represented as a string.
 
 public class CountAndSay {
     public String countAndSay(int n) {
-        if(n == 1) {
-            return "1";
-        }
-        
-        String res = "1";
-        
+        char[] ori = {'1'};
         for(int i = 1; i < n; i++) {
-            String temp = "";
-            char cur = res.charAt(0);
-            int size = res.length();
-            int count = 1;
-            for(int j = 1; j < size; j++) {
-                if( res.charAt(j) == cur) {
-                    count++;
-                } else {
-                    temp += count + "" + cur;
-                    cur = res.charAt(j);
-                    count = 1;
+            StringBuilder sb = new StringBuilder();
+            int start = 0;
+            int len = ori.length;
+            for(int ii = 1; ii <= len; ii++) {
+                if(ii == len || ori[ii] != ori[start]) {
+                    sb.append(ii-start);
+                    sb.append(ori[start]);
+                    start = ii;
                 }
             }
-            temp += count + "" + cur;
-            res = temp;
+            ori = sb.toString().toCharArray();
         }
-        return res;
+        return new String(ori);
     }
 }
