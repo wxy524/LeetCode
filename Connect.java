@@ -9,14 +9,16 @@ Given a binary tree
       TreeLinkNode *right;
       TreeLinkNode *next;
     }
-Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+Populate each next pointer to point to its next right node. If there is no next right node, 
+the next pointer should be set to NULL.
 
 Initially, all next pointers are set to NULL.
 
 Note:
 
 You may only use constant extra space.
-You may assume that it is a perfect binary tree (ie, all leaves are at the same level, and every parent has two children).
+You may assume that it is a perfect binary tree (ie, all leaves are at the same level, 
+and every parent has two children).
 */
 
 /**
@@ -29,27 +31,21 @@ You may assume that it is a perfect binary tree (ie, all leaves are at the same 
  */
 public class Connect {
     public void connect(TreeLinkNode root) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        
-        TreeLinkNode memory_root = root;
-        TreeLinkNode temp_root = root;
-        if (root == null) return;
-        else if ( root.right == null) {
-            root.next = null;
+        if(root == null || root.left == null) {
             return;
-        } else {
-            while (temp_root.right != null) {
-                while (temp_root.next != null) {
-                    temp_root.left.next = temp_root.right;
-                    temp_root.right.next = temp_root.next.left;
-                    temp_root = temp_root.next;
-                }
-                temp_root.left.next = temp_root.right;
-                temp_root = memory_root.left;
-                memory_root = temp_root;
-            }
         }
-        
-        return;
+        TreeLinkNode lastLevel = root;
+        while(lastLevel.left != null) {
+            TreeLinkNode p1 = lastLevel;
+            TreeLinkNode p2 = lastLevel.next;
+            while(p2 != null) {
+                p1.left.next = p1.right;
+                p1.right.next = p2.left;
+                p1 = p2;
+                p2 = p2.next;
+            }
+            p1.left.next = p1.right;
+            lastLevel = lastLevel.left;
+        }
     }
 }
