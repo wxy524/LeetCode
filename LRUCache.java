@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class LRUCache {
-    
     Map <Integer, DoubleLinkedList> hs;
     DoubleLinkedList head;
     DoubleLinkedList tail;
