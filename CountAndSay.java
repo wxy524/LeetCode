@@ -13,23 +13,23 @@ Given an integer n, generate the nth sequence.
 
 Note: The sequence of integers will be represented as a string.
 */
+import java.lang.*;
 
 public class CountAndSay {
     public String countAndSay(int n) {
-        char[] ori = {'1'};
+        String res = "1";
         for(int i = 1; i < n; i++) {
-            StringBuilder sb = new StringBuilder();
             int start = 0;
-            int len = ori.length;
-            for(int ii = 1; ii <= len; ii++) {
-                if(ii == len || ori[ii] != ori[start]) {
-                    sb.append(ii-start);
-                    sb.append(ori[start]);
-                    start = ii;
-                }
+            StringBuilder sb = new StringBuilder();
+            for(int strIdx = 1; strIdx <= res.length(); strIdx++) {
+                if(strIdx == res.length() || res.charAt(strIdx) != res.charAt(start)){                
+                    sb.append(strIdx - start);
+                    sb.append(res.charAt(start));
+                    start = strIdx;
+                } 
             }
-            ori = sb.toString().toCharArray();
+            res = sb.toString();
         }
-        return new String(ori);
+        return res;    
     }
 }
