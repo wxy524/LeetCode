@@ -13,25 +13,26 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class LRUCache {
-    Map <Integer, DoubleLinkedList> hs;
-    DoubleLinkedList head;
-    DoubleLinkedList tail;
+    
+    DoubleLinkedList frontSentinel, backSentinel;
+    HashMap<Integer, DoubleLinkedList> hm;
     int capacity;
     
     public LRUCache(int capacity) {
+        hm = new HashMap<Integer, DoubleLinkedList>();
+        frontSentinel = new DoubleLinkedList(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        backSentinel = new DoubleLinkedList(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        frontSentinel.next = backSentinel;
+        frontSentinel.prev = backSentinel;
+        backSentinel.next = frontSentinel;
+        backSentinel.prev = frontSentinel;
         this.capacity = capacity;
-        head = new DoubleLinkedList(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        tail = new DoubleLinkedList(Integer.MIN_VALUE, Integer.MIN_VALUE);
-        head.next = tail;
-        head.prev = null;
-        tail.prev = head;
-        tail.next = null;
-        hs = new HashMap<Integer, DoubleLinkedList>();
     }
     
     public int get(int key) {
-       if(hs.containsKey(key)) {
-            DoubleLinkedList cur = hs.get(key);
+        if(hm.containsKey(key)) {
+            DoubleLinkedList cur = hm.get(key);
+            delete(cur);
             moveToHead(cur);
             return cur.value;
         } else {
@@ -40,55 +41,45 @@ public class LRUCache {
     }
     
     public void set(int key, int value) {
-        if(hs.containsKey(key)){
-            DoubleLinkedList cur = hs.get(key);
-            cur.value = value;
+        if(hm.containsKey(key)) {
+            DoubleLinkedList cur = hm.get(key);
+            delete(cur);
             moveToHead(cur);
+            cur.value = value;
         } else {
-            if(hs.size() >= capacity) {
-                hs.remove(tail.prev.key);
-                removeTail();
-            }
-            DoubleLinkedList adding = new DoubleLinkedList(key, value);
-            addToHead(adding);
-            hs.put(key, adding);
+            if(hm.size() == capacity) {
+                hm.remove(backSentinel.prev.key);
+                delete(backSentinel.prev);
+            } 
+            DoubleLinkedList cur = new DoubleLinkedList(key, value);
+            moveToHead(cur);
+            hm.put(key, cur);
         }    
     }
     
-    private void moveToHead(DoubleLinkedList cur) {
-        cur.prev.next = cur.next;
-        cur.next.prev = cur.prev;
-        cur.prev = null;
-        cur.next = null;
-        addToHead(cur);
+    private void delete(DoubleLinkedList link) {
+        link.prev.next = link.next;
+        link.next.prev = link.prev;
+        link.next = null;
+        link.prev = null;
     }
     
-    private void addToHead(DoubleLinkedList cur) {
-        cur.next = head.next;
-        cur.prev = head;
-        head.next.prev = cur;
-        head.next = cur;
-    }
-    
-    private void removeTail() {
-        if(head.next == tail) {
-            return;
-        }
-        DoubleLinkedList newPrev = tail.prev.prev;
-        tail.prev.next = null;
-        tail.prev = null;
-        newPrev.next = tail;
-        tail.prev = newPrev;
+    private void moveToHead(DoubleLinkedList link) {
+        frontSentinel.next.prev = link;
+        link.next = frontSentinel.next;
+        frontSentinel.next = link;
+        link.prev = frontSentinel;
     }
 }
 
 class DoubleLinkedList {
-    DoubleLinkedList prev;
-    DoubleLinkedList next;
-    int key;
-    int value;
-    DoubleLinkedList(int key, int value) {
-        this.key = key;
-        this.value = value;
-    }
+        DoubleLinkedList next;
+        DoubleLinkedList prev;
+        int key, value;
+        DoubleLinkedList(int key, int value) {
+            next = null;
+            prev = null;
+            this.key = key;
+            this.value = value;
+        }
 }
