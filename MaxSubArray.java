@@ -16,19 +16,13 @@ approach, which is more subtle.
 
 public class MaxSubArray {
     public int maxSubArray(int[] A) {
-        if(A.length == 0 || A == null) {
-            return 0;
+        int[] sum = new int[A.length];
+        int global_max = A[0];
+        sum[0] = A[0];
+        for(int idx = 1; idx < A.length; idx++) {
+            sum[idx] = Math.max(sum[idx-1]+A[idx], A[idx]);
+            global_max = Math.max(sum[idx], global_max);
         }
-        int max = Integer.MIN_VALUE, sum = 0;
-        for(int i = 0; i < A.length; i++) {
-            sum += A[i];
-            if(sum > max) {
-                max = sum;
-            }
-            if(sum < 0) {
-                sum = 0;
-            }
-        }  
-        return max;
+        return global_max;
     }
 }
